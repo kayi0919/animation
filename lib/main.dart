@@ -1,85 +1,79 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  static const String _title = 'Animation Test';
-
+class MyApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
-        body: const MyStatefulWidget(),
-      ),
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context){
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MyHomePage(),
     );
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({super.key});
+class MyHomePage extends StatefulWidget{
+  const MyHomePage({Key? key}) : super(key: key);
+
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  double padValue = 500.0;
-  double padValue2 =500.0;
-  void _updatePadding(double value) {
-    setState(() {
-      padValue = value;
-      padValue2 = value;
-    });
-  }
+class _MyHomePageState extends State<MyHomePage> {
+
+  bool takeOff = false;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        AnimatedPadding(
-            padding: EdgeInsets.only(left:150,top: padValue2),
-            duration: const Duration(seconds: 2),
-            curve: Curves.linear,
-            child: const Icon(
-              Icons.airplanemode_active,
-              color: Colors.blue,
-              size: 50,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('flutter animation'),
+      ),
+      body: SizedBox(
+        child: Stack(
+          children: <Widget>[
+            AnimatedPositioned(
+              left: 100.0,
+              right: 100.0,
+              top: takeOff ? 150.0 : 600.0,
+              duration: const Duration(seconds: 2),
+              curve: Curves.fastOutSlowIn,
+              child: const Icon(
+                  Icons.airplanemode_active,
+                  color: Colors.blueGrey,
+                  size: 48.0
+              ),
             ),
-            onEnd: (){
-              setState(() {
-                padValue2 = 500;
-              });
-            }
-        ),
-
-        Padding(
-          padding: const EdgeInsets.only(left:150,top: 10),
-
-          child: TextButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-                Colors.blue),
-            foregroundColor: MaterialStateProperty.all(
-                Colors.yellow),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.airplanemode_active),
-              Text('起飛'),
-            ],
-          ),
-            onPressed: () {
-              _updatePadding(padValue2== 0.0 ? 100.0 : 0.0);
-            }
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton.icon(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      Colors.blue),
+                  foregroundColor: MaterialStateProperty.all(
+                      Colors.yellow),
+                ),
+                icon: const Icon(Icons.airplanemode_active, color: Colors.white),
+                label: const Text('起飛'),
+                onPressed: () => {
+                  setState(() {
+                    takeOff = !takeOff;
+                  })
+                },
+              ),
+            ),
+          ],
         ),
       ),
-      ],
     );
   }
+
+
 }
+
